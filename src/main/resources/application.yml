@@ -1,0 +1,49 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/jobmanager?serverTimezone=GMT%2b8&characterEncoding=utf8
+    username: root
+    #如果密码不加引号，数据库认为是一个0，加""转换为字符串,可将密码改为123456避免这个问题
+    password: "000000"
+  jpa:
+    properties:
+      show-sql: true
+      hibernate:
+        ddl-auto: update
+
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: QuartzScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            useProperties: false
+            isClustered: false
+            misfireThreshold: 6000
+#            dataSource: myDB
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+#          dataSource:
+#            myDB:
+#              driver: com.mysql.cj.jdbc.Driver
+#              URL: jdbc:mysql://127.0.0.1:3306/jobmanager
+#              password: 000000
+#              user: root
+#              maxConnections: 10
+#              provider: hikaricp
+          #初始化表结构
+#      jdbc:
+#        initialize-schema: always
+#        schema: classpath:org\impl\impl\jdbcjobstore\tables_mysql_innodb.sql

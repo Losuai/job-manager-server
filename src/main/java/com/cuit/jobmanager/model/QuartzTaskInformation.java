@@ -1,6 +1,7 @@
 package com.cuit.jobmanager.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "quartz_task_information")
@@ -8,8 +9,8 @@ public class QuartzTaskInformation {
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private long id;
-
   private long version;
+  @NotNull
   private String taskNo;
   private String taskName;
   private String schedulerRule;
@@ -23,7 +24,15 @@ public class QuartzTaskInformation {
   private String url;
   private String executeParamter;
   private String timeKey;
+  private Integer pauseOrResume;
 
+  public Integer getPauseOrResume() {
+    return pauseOrResume;
+  }
+
+  public void setPauseOrResume(Integer pauseOrResume) {
+    this.pauseOrResume = pauseOrResume;
+  }
 
   public long getId() {
     return id;

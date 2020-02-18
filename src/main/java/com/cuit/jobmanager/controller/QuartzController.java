@@ -32,4 +32,24 @@ public class QuartzController {
         return ResponseEntity.ok(ResultUtil.fail(ResultEnum.DELETE_JOB_SUCCESS));
     }
 
+    @RequestMapping(value = "/task/update", method = RequestMethod.POST)
+    public ResponseEntity updateTask(@RequestBody QuartzTaskInformation quartzTaskInformation){
+        QuartzTaskInformation taskInfo = quartzTaskService.updateTask(quartzTaskInformation);
+        if (taskInfo == null){
+            return ResponseEntity.ok(ResultUtil.fail(ResultEnum.UPDATE_FAIL));
+        }
+        return ResponseEntity.ok(ResultUtil.success(taskInfo));
+    }
+
+    @RequestMapping(value = "/task/option" , method = RequestMethod.GET)
+    public ResponseEntity pauseOrResumeJob(@RequestParam String jobName, Integer onOrOff){
+        quartzTaskService.pauseOrResumeJob(jobName, onOrOff);
+        return ResponseEntity.ok(ResultUtil.success());
+    }
+
+    @RequestMapping(value = "/task/runNow", method = RequestMethod.GET)
+    public ResponseEntity runJobNow(@RequestParam String jobName){
+        quartzTaskService.runJobNow(jobName);
+        return ResponseEntity.ok(ResultUtil.success());
+    }
 }

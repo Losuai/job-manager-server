@@ -21,27 +21,28 @@ public class QuartzTaskInfoServiceImpl implements QuartzTaskInfoService {
     private DynamicJobService dynamicJobService;
 
     @Override
+    @Transactional
     public QuartzTaskInformation insert(QuartzTaskInformation quartzTaskInformation) {
         String taskNo = quartzTaskInformation.getTaskNo();
-        quartzTaskInformation.setVersion(0);
+        quartzTaskInformation.setVersion(1);
         quartzTaskInformation.setCreateTime(System.currentTimeMillis());
         quartzTaskInformation.setLastModifyTime(System.currentTimeMillis());
-        if (this.selectTaskByNo(taskNo).isPresent()){
+        if (this.selectTaskByNo(taskNo) != null){
             return null;
         }
         return quartzTaskInformationDao.save(quartzTaskInformation);
     }
 
     @Override
-    public Optional<QuartzTaskInformation> selectTaskByNo(String taskNo) {
-        Optional<QuartzTaskInformation> quartzTaskInformation = quartzTaskInformationDao.findByTaskNo(taskNo);
-        return quartzTaskInformation;
+    public QuartzTaskInformation selectTaskByNo(String taskNo) {
+        Optional<QuartzTaskInformation> quartzTaskInformationOpt = quartzTaskInformationDao.findByTaskNo(taskNo);
+        return quartzTaskInformationOpt.orElse(null);
     }
 
     @Override
-    public Optional<List<QuartzTaskInformation>> findAllUnfrozeTasks() {
-        Optional<List<QuartzTaskInformation>> quartzTaskInformations = quartzTaskInformationDao.findAllByFrozenStatus(ResultEnum.UNFROZEN.name());
-        return quartzTaskInformations;
+    public List<QuartzTaskInformation> findAllUnfrozeTasks() {
+        Optional<List<QuartzTaskInformation>> quartzTaskInformationsOpt = quartzTaskInformationDao.findAllByFrozenStatus(ResultEnum.UNFROZEN.name());
+        return quartzTaskInformationsOpt.orElse(null);
     }
 
     @Override
@@ -55,5 +56,25 @@ public class QuartzTaskInfoServiceImpl implements QuartzTaskInfoService {
         boolean isDeletedJob = dynamicJobService.deleteJob(taskNo);
         return isDeletedJob && (isDeletedTaskInfo == 1);
     }
+
+    @Override
+    @Transactional
+    public QuartzTaskInformation updateTaskInfo(QuartzTaskInformation quartzTaskInformation) {
+        Optional<QuartzTaskInformation> quartzTaskInformationOptional = quartzTaskInformationDao.findByTaskNo(quartzTaskInformation.getTaskNo());
+        if (!quartzTaskInformationOptional.isPresent())
+            return null;
+        if (quartzTaskInformation.getVersion() != quartzTaskInformationOptional.get().getVersion()){
+            return null;
+        }
+        if (ResultEnum.UNFROZEN.name().equals(quartzTaskInformation.getFrozenStatus())){
+            quartzTaskInformation.setUnfrozenTime(System.currentTimeMillis());
+        }else if (ResultEnum.FROZEN.name().equals(quartzTaskInformation.getFrozenStatus())){
+            quartzTaskInformation.setFrozenTime(System.currentTimeMillis());
+        }
+        quartzTaskInformation.setLastModifyTime(System.currentTimeMillis());
+        quartzTaskInformation.setVersion(quartzTaskInformation.getVersion()+1);
+        return quartzTaskInformationDao.saveAndFlush(quartzTaskInformation);
+    }
+
 
 }

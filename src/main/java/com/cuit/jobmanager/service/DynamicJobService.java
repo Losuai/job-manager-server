@@ -61,4 +61,43 @@ public class DynamicJobService  {
         return isDeleted;
     }
 
+    public void schedule(QuartzTaskInformation quartzTaskInformation){
+        JobDataMap jobDataMap = this.getJobDataMap(quartzTaskInformation);
+        JobDetail jobDetail = this.getJobDetail(quartzTaskInformation, jobDataMap);
+        CronTrigger cronTrigger = this.getTrigger(quartzTaskInformation);
+        this.schedule(cronTrigger, jobDetail);
+    }
+
+    public void updateJob(String jobName, QuartzTaskInformation quartzTaskInformation){
+        this.deleteJob(jobName);
+        this.schedule(quartzTaskInformation);
+    }
+
+    public void pauseJob(String jobName){
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        try {
+            scheduler.pauseJob(JobKey.jobKey(jobName, Scheduler.DEFAULT_GROUP));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resumeJob(String jobName){
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        try {
+            scheduler.resumeJob(JobKey.jobKey(jobName, Scheduler.DEFAULT_GROUP));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void runJobNow(String jobName){
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        try {
+            scheduler.triggerJob(JobKey.jobKey(jobName, Scheduler.DEFAULT_GROUP));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

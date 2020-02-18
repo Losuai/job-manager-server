@@ -6,7 +6,16 @@ import org.quartz.SchedulerException;
 
 public interface QuartzTaskService {
     QuartzTaskInformation addTask(QuartzTaskInformation quartzTaskInformation);
+
     void initLoadOnlineTasks() throws SchedulerException;
+
     QuartzTaskRecords addTaskRecord(String taskNo);
+
     boolean deleteTask(String JobName);
+
+    QuartzTaskInformation updateTask(QuartzTaskInformation quartzTaskInformation);
+
+    void pauseOrResumeJob(String jobName, Integer onOrOff);
+
+    void runJobNow(String jobName);
 }

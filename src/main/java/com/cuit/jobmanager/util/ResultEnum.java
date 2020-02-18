@@ -9,8 +9,10 @@ public enum  ResultEnum {
 
     SAVE_FAIL(12222 , "SAVE FAIL"),
 
+    UPDATE_FAIL(111111, "UPDATE FAIL"),
     DELETE_JOB_SUCCESS(11001, "DELETE JOB SUCCESS"),
     DELETE_JOB_FAIL(11000, "DELETE JOB ERROR");
+
 
     ResultEnum(Integer code, String msg) {
         this.code = code;

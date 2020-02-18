@@ -7,6 +7,10 @@ public class ResultUtil {
         Result result = new Result(ResultEnum.SUCCESS, o);
         return result;
     }
+    public static Result success(){
+        Result result = new Result(ResultEnum.SUCCESS);
+        return result;
+    }
 
     public static Result fail(){
         Result result = new Result(ResultEnum.FAIL);

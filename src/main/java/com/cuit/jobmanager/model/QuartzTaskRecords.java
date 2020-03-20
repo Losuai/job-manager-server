@@ -9,11 +9,10 @@ public class QuartzTaskRecords {
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private long id;
   private String taskNo;
-  private String timeKeyValue;
   private long executeTime;
-  private String taskStatus;
-  private long failcount;
-  private String failReason;
+  private String schedulerRule;
+  private long isFailure;
+  private String taskName;
   private long createTime;
   private long lastModifyTime;
 
@@ -35,16 +34,6 @@ public class QuartzTaskRecords {
     this.taskNo = taskNo;
   }
 
-
-  public String getTimeKeyValue() {
-    return timeKeyValue;
-  }
-
-  public void setTimeKeyValue(String timeKeyValue) {
-    this.timeKeyValue = timeKeyValue;
-  }
-
-
   public long getExecuteTime() {
     return executeTime;
   }
@@ -54,30 +43,30 @@ public class QuartzTaskRecords {
   }
 
 
-  public String getTaskStatus() {
-    return taskStatus;
+  public String getSchedulerRule() {
+    return schedulerRule;
   }
 
-  public void setTaskStatus(String taskStatus) {
-    this.taskStatus = taskStatus;
-  }
-
-
-  public long getFailcount() {
-    return failcount;
-  }
-
-  public void setFailcount(long failcount) {
-    this.failcount = failcount;
+  public void setSchedulerRule(String schedulerRule) {
+    this.schedulerRule = schedulerRule;
   }
 
 
-  public String getFailReason() {
-    return failReason;
+  public long getIsFailure() {
+    return isFailure;
   }
 
-  public void setFailReason(String failReason) {
-    this.failReason = failReason;
+  public void setIsFailure(long isFailure) {
+    this.isFailure = isFailure;
+  }
+
+
+  public String getTaskName() {
+    return taskName;
+  }
+
+  public void setTaskName(String taskName) {
+    this.taskName = taskName;
   }
 
 

@@ -21,7 +21,7 @@ public class QuartzTaskInformation {
   private long createTime;
   private long lastModifyTime;
   private String sendType;
-  private String url;
+  private String remark;
   private String executeParamter;
   private String timeKey;
   private Integer pauseOrResume;
@@ -142,12 +142,12 @@ public class QuartzTaskInformation {
   }
 
 
-  public String getUrl() {
-    return url;
+  public String getRemark() {
+    return remark;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setRemark(String remark) {
+    this.remark = remark;
   }
 
 

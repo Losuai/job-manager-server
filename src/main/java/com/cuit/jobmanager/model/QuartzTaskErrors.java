@@ -8,7 +8,7 @@ public class QuartzTaskErrors {
   @Id
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private long id;
-  private String taskExecuteRecordId;
+  private long taskExecuteRecordId;
   private String errorKey;
   private String errorValue;
   private long createTime;
@@ -24,11 +24,11 @@ public class QuartzTaskErrors {
   }
 
 
-  public String getTaskExecuteRecordId() {
+  public long getTaskExecuteRecordId() {
     return taskExecuteRecordId;
   }
 
-  public void setTaskExecuteRecordId(String taskExecuteRecordId) {
+  public void setTaskExecuteRecordId(long taskExecuteRecordId) {
     this.taskExecuteRecordId = taskExecuteRecordId;
   }
 

@@ -1,5 +1,6 @@
 package com.cuit.jobmanager.job;
 
+import com.cuit.jobmanager.model.QuartzTaskErrors;
 import com.cuit.jobmanager.model.QuartzTaskRecords;
 import com.cuit.jobmanager.service.QuartzTaskService;
 import org.quartz.JobDataMap;
@@ -29,10 +30,21 @@ public class QuartzJobFactory extends QuartzJobBean {
         String url = jobDataMap.getString("url");
         logger.info("定时任务被执行:taskNo={},executorNo={},sendType={},url={},executeParameter={}", taskNo, executorNo, sendType, url, executeParameter);
         QuartzTaskRecords quartzTaskRecords = null;
-        quartzTaskRecords = quartzTaskService.addTaskRecord(taskNo);
+        long isFailure = 0;
+        quartzTaskRecords = quartzTaskService.addTaskRecord(taskNo, isFailure);
         if (quartzTaskRecords == null){
             logger.info("taskNo={}保存执行记录失败", taskNo);
             return;
+        }else {
+            if (isFailure == 1 ){
+                QuartzTaskErrors quartzTaskErrors = new QuartzTaskErrors();
+                quartzTaskErrors.setCreateTime(System.currentTimeMillis());
+                quartzTaskErrors.setErrorKey("错误关键字");
+                quartzTaskErrors.setErrorValue("错误内容");
+                quartzTaskErrors.setTaskExecuteRecordId(quartzTaskRecords.getId());
+                quartzTaskErrors.setLastModifyTime(System.currentTimeMillis());
+                quartzTaskService.addError(quartzTaskErrors);
+            }
         }
 
     }

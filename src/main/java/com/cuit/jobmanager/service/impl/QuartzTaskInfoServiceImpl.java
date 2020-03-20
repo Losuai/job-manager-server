@@ -1,11 +1,15 @@
 package com.cuit.jobmanager.service.impl;
 
 import com.cuit.jobmanager.dao.QuartzTaskInformationDao;
+import com.cuit.jobmanager.model.QQuartzTaskInformation;
 import com.cuit.jobmanager.model.QuartzTaskInformation;
 import com.cuit.jobmanager.service.DynamicJobService;
 import com.cuit.jobmanager.service.QuartzTaskInfoService;
 import com.cuit.jobmanager.util.ResultEnum;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +18,7 @@ import java.util.Optional;
 
 @Service
 public class QuartzTaskInfoServiceImpl implements QuartzTaskInfoService {
+    private final QQuartzTaskInformation qQuartzTaskInformation = QQuartzTaskInformation.quartzTaskInformation;
     @Autowired
     private QuartzTaskInformationDao quartzTaskInformationDao;
 
@@ -27,6 +32,7 @@ public class QuartzTaskInfoServiceImpl implements QuartzTaskInfoService {
         quartzTaskInformation.setVersion(1);
         quartzTaskInformation.setCreateTime(System.currentTimeMillis());
         quartzTaskInformation.setLastModifyTime(System.currentTimeMillis());
+        quartzTaskInformation.setPauseOrResume(2);
         if (this.selectTaskByNo(taskNo) != null){
             return null;
         }
@@ -73,8 +79,44 @@ public class QuartzTaskInfoServiceImpl implements QuartzTaskInfoService {
         }
         quartzTaskInformation.setLastModifyTime(System.currentTimeMillis());
         quartzTaskInformation.setVersion(quartzTaskInformation.getVersion()+1);
-        return quartzTaskInformationDao.saveAndFlush(quartzTaskInformation);
+        quartzTaskInformation.setCreateTime(quartzTaskInformationOptional.get().getCreateTime());
+        return quartzTaskInformationDao.save(quartzTaskInformation);
     }
 
+    @Override
+    public Page<QuartzTaskInformation> findAllByPage(String keyWords , Pageable pageable) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if (keyWords == null)
+            return quartzTaskInformationDao.findAll(pageable);
+        booleanBuilder.or(qQuartzTaskInformation.taskName.containsIgnoreCase(keyWords)).
+                or(qQuartzTaskInformation.taskNo.containsIgnoreCase(keyWords)).
+                or(qQuartzTaskInformation.executorNo.containsIgnoreCase(keyWords)).
+                or(qQuartzTaskInformation.schedulerRule.containsIgnoreCase(keyWords));
+        return quartzTaskInformationDao.findAll(booleanBuilder, pageable);
+    }
 
+    @Override
+    public int findAllTasks() {
+        return quartzTaskInformationDao.findAll().size();
+    }
+
+    @Override
+    public int findTasksPaused() {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qQuartzTaskInformation.pauseOrResume.eq(0));
+        return (int) quartzTaskInformationDao.count(booleanBuilder);
+    }
+
+    @Override
+    public int findTasksRunning() {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qQuartzTaskInformation.pauseOrResume.eq(1));
+        return (int) quartzTaskInformationDao.count(booleanBuilder);
+    }
+
+    @Override
+    public List getNumOfTask(){
+        List list = quartzTaskInformationDao.getNumTask();
+        return list;
+    }
 }

@@ -23,7 +23,7 @@ public class DynamicJobService  {
         jobDataMap.put("taskNo", quartzTaskInfo.getTaskNo());
         jobDataMap.put("executorNo", quartzTaskInfo.getExecutorNo());
         jobDataMap.put("sendType", quartzTaskInfo.getSendType());
-        jobDataMap.put("url", quartzTaskInfo.getUrl());
+        jobDataMap.put("url", quartzTaskInfo.getRemark());
         jobDataMap.put("executeParameter", quartzTaskInfo.getExecuteParamter());
         return jobDataMap;
     }

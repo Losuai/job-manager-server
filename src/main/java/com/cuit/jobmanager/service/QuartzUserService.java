@@ -10,4 +10,5 @@ public interface QuartzUserService {
     Result findUser(String userName);
     Result updateAvatar(byte[] avatar, Long id);
     byte[] getAvatar(String userName);
+    Result changePwd(String username, String oldPwd, String newPwd);
 }

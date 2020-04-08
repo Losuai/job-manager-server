@@ -88,4 +88,23 @@ public class QuartzUserServiceImpl implements QuartzUserService {
         }
         return avatar;
     }
+
+    @Override
+    public Result changePwd(String username, String oldPwd, String newPwd) {
+        QuartzUser existUser = quartzUserDao.findByUsername(username);
+        if (existUser != null){
+            if (!existUser.getPassword().equals(oldPwd)){
+                return new Result(222, "旧密码不正确", null);
+            }else {
+                if (existUser.getPassword().equals(newPwd)){
+                    return new Result(222, "新密码与旧密码相同", null);
+                }
+                existUser.setPassword(newPwd);
+                quartzUserDao.save(existUser);
+                return new Result(200, "修改成功", null);
+            }
+        }else {
+            return new Result(222, "用户不存在", null);
+        }
+    }
 }

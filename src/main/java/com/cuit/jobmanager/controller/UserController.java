@@ -64,8 +64,17 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/find/avatar",method = RequestMethod.GET)
-    public ResponseEntity findUserAvatar(@RequestParam String username){
+    public ResponseEntity findUserAvatar(@RequestParam(required = false) String username){
         byte[] avatar = quartzUserService.getAvatar(username);
         return ResponseEntity.ok(avatar);
+    }
+
+    @RequestMapping(value = "/user/pwd", method = RequestMethod.POST)
+    public ResponseEntity changePwd(@RequestBody JsonNode jsonNode){
+        String username = jsonNode.path("username").textValue();
+        String oldPwd = jsonNode.path("oldPwd").textValue();
+        String newPwd = jsonNode.path("newPwd").textValue();
+        Result result = quartzUserService.changePwd(username, oldPwd, newPwd);
+            return ResponseEntity.ok(result);
     }
 }
